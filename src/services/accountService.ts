@@ -21,7 +21,6 @@ export class AccountService {
 
   async authorize(token: string) {
     let account_data = verifyToken(token);
-    console.log(account_data);
 
     if (account_data == null) throw new Error("Phiên đăng nhập hết hạn");
   }

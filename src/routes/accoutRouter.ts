@@ -12,7 +12,6 @@ accountRouter.post("/login", async (req: Request, res: Response) => {
     const { username, password } = req.body;
     const account = await accountService.authenticate(username, password);
 
-    console.log("Account : ", account);
     if (account) {
       // Tạo mã thông báo JWT
       const token = generateToken(account);
@@ -23,6 +22,17 @@ accountRouter.post("/login", async (req: Request, res: Response) => {
     }
   } catch (error: any) {
     res.json({ message: error.message });
+  }
+});
+
+accountRouter.get("/me", async (req: Request, res: Response) => {
+  try {
+    const token = req.query.token as string;
+    await accountService.authorize(token);
+
+    res.status(200);
+  } catch {
+    res.status(401).json({ message: "Phiên đăng nhập hết hạn" });
   }
 });
 
