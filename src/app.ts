@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import express, { NextFunction, Request, Response } from "express";
 import mysql from "mysql2";
 import "reflect-metadata";
+import { config } from "./config";
 import { errorHandler } from "./errors/errorHandler";
 import router from "./routes";
 // import core_router from "./core/routes";
@@ -23,7 +24,6 @@ app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 // Sử dụng router
 // app.use('/api', core_router);
 app.use("/api", router);
-// app.use("/api-core", core_router);
 // Đăng ký middleware xử lý lỗi toàn cục
 app.use(errorHandler);
 // Middleware tùy chỉnh để xử lý dữ liệu đầu vào
@@ -45,8 +45,10 @@ function escapeRequestBody(data: any): any {
   }
   return data;
 }
+
 // Xử lý các route không tồn tại
 app.use((_: Request, res: Response) => {
   res.json({ message: "Không tìm thấy đường dẫn" });
 });
+
 export default app;

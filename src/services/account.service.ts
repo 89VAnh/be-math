@@ -1,6 +1,6 @@
 import { injectable } from "tsyringe";
 import { verifyToken } from "../config/jwt";
-import { AccountRepository } from "../repositories/accountRepository";
+import { AccountRepository } from "../repositories/account.repository";
 var md5 = require("md5");
 
 @injectable()
@@ -23,5 +23,9 @@ export class AccountService {
     let account_data = verifyToken(token);
 
     if (account_data == null) throw new Error("Phiên đăng nhập hết hạn");
+  }
+
+  async searchAccount(page: number, page_size: number): Promise<any[]> {
+    return await this.accountRepository.searchAccount(page, page_size);
   }
 }

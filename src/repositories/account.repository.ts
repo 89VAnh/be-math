@@ -140,36 +140,19 @@ export class AccountRepository {
   //     }
   //   }
 
-  //   async searchAccount(
-  //     page_index: number,
-  //     page_size: number,
-  //     search_content: string,
-  //     account_name: string,
-  //     full_name: string,
-  //     gender: number,
-  //     date_of_birth: Date,
-  //     email: string,
-  //     phone_number: string,
-  //     description: string,
-  //   ): Promise<any[]> {
-  //     try {
-  //       const sql =
-  //         "CALL SearchAccount(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, @err_code, @err_msg)";
-  //       const [results] = await this.db.query(sql, [
-  //         page_index,
-  //         page_size,
-  //         search_content,
-  //         account_name,
-  //         description,
-  //         full_name,
-  //         gender,
-  //         date_of_birth,
-  //         email,
-  //         phone_number,
-  //       ]);
-  //       return results;
-  //     } catch (error: any) {
-  //       throw new Error(error.message);
-  //     }
-  //   }
+  async searchAccount(
+    page: number,
+    page_size: number
+    // account_name: string,
+  ): Promise<any[]> {
+    const skip = (page - 1) * page_size;
+
+    try {
+      const sql = "SELECT * FROM Account LIMIT ?, ?";
+      const [results] = await this.db.query(sql, [skip, page_size]);
+      return results;
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
 }

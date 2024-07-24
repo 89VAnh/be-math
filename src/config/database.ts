@@ -1,6 +1,6 @@
 import { Pool, PoolConnection, createPool } from "mysql2/promise";
 import { injectable } from "tsyringe";
-import { config } from "./config";
+import { config } from ".";
 
 // Cấu hình kết nối MySQL
 const connectionConfig = {
