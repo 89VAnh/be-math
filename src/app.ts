@@ -3,7 +3,6 @@ import dotenv from "dotenv";
 import express, { NextFunction, Request, Response } from "express";
 import mysql from "mysql2";
 import "reflect-metadata";
-import { config } from "./config";
 import { errorHandler } from "./errors/errorHandler";
 import router from "./routes";
 // import core_router from "./core/routes";

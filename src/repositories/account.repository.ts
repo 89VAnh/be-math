@@ -97,15 +97,15 @@ export class AccountRepository {
   //     }
   //   }
 
-  //   async deleteAccount(list_json: any, lu_account_id: string): Promise<any> {
-  //     try {
-  //       const sql = "CALL DeleteAccount(?, ?, @err_code, @err_msg)";
-  //       await this.db.query(sql, [JSON.stringify(list_json), lu_account_id]);
-  //       return true;
-  //     } catch (error: any) {
-  //       throw new Error(error.message);
-  //     }
-  //   }
+  async deleteAccount(username: string): Promise<any> {
+    try {
+      const sql = "DELETE FROM account WHERE username = ?";
+      await this.db.query(sql, [username]);
+      return true;
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
 
   //   async getAccountById(id: string): Promise<any> {
   //     try {
@@ -144,12 +144,12 @@ export class AccountRepository {
     page: number,
     page_size: number
     // account_name: string,
-  ): Promise<any[]> {
+  ): Promise<Account[]> {
     const skip = (page - 1) * page_size;
 
     try {
-      const sql = "SELECT * FROM Account LIMIT ?, ?";
-      const [results] = await this.db.query(sql, [skip, page_size]);
+      const sql = "SELECT * FROM account LIMIT ?, ?";
+      const results = await this.db.query(sql, [skip, page_size]);
       return results;
     } catch (error: any) {
       throw new Error(error.message);

@@ -1,5 +1,6 @@
 import { injectable } from "tsyringe";
 import { verifyToken } from "../config/jwt";
+import { Account } from "../models/account";
 import { AccountRepository } from "../repositories/account.repository";
 var md5 = require("md5");
 
@@ -25,7 +26,19 @@ export class AccountService {
     if (account_data == null) throw new Error("Phiên đăng nhập hết hạn");
   }
 
-  async searchAccount(page: number, page_size: number): Promise<any[]> {
-    return await this.accountRepository.searchAccount(page, page_size);
+  async searchAccount(page: number, page_size: number): Promise<Account[]> {
+    try {
+      return await this.accountRepository.searchAccount(page, page_size);
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
+
+  async deleteAccount(username: string): Promise<any> {
+    try {
+      return await this.accountRepository.deleteAccount(username);
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
   }
 }
