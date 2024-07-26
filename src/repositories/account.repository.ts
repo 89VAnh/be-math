@@ -1,14 +1,19 @@
 import { injectable } from "tsyringe";
 import { Database } from "../config/database";
-import { Account } from "../models/account";
+import { Account, SearchAccount, SearchAccountResult } from "../models/account";
 
 @injectable()
 export class AccountRepository {
   constructor(private db: Database) {}
-  async authenticate(username: string, password: string): Promise<Account> {
+  async authenticate(
+    username: string,
+    password: string,
+    role: string
+  ): Promise<Account> {
     try {
-      const sql = "SELECT * FROM account WHERE username = ? AND password = ?";
-      const results = await this.db.query(sql, [username, password]);
+      const sql =
+        "SELECT * FROM account WHERE username = ? AND password = ? AND role = ?";
+      const results = await this.db.query(sql, [username, password, role]);
       return results[0];
     } catch (error: any) {
       console.log(error);
@@ -16,34 +21,25 @@ export class AccountRepository {
     }
   }
 
-  //   async createAccount(account: Account): Promise<any> {
-  //     try {
-  //       const sql =
-  //         "CALL InsertAccount(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,@err_code, @err_msg)";
-  //       await this.db.query(sql, [
-  //         account.account_id,
-  //         account.profile_id,
-  //         account.account_name,
-  //         account.password,
-  //         account.type,
-  //         account.description,
-  //         account.first_name,
-  //         account.middle_name,
-  //         account.last_name,
-  //         account.full_name,
-  //         account.avatar,
-  //         account.gender,
-  //         account.date_of_birth,
-  //         account.email,
-  //         account.phone_number,
-  //         account.is_guest,
-  //         account.created_by_account_id,
-  //       ]);
-  //       return true;
-  //     } catch (error: any) {
-  //       throw new Error(error.message);
-  //     }
-  //   }
+  async createAccount(account: Account): Promise<any> {
+    try {
+      const sql =
+        "INSERT INTO account(`username`,`password`,`name`,`email`,`phone`,`avatar`,`role`) VALUES (?, ?, ?, ?, ?, ?, ?);";
+      await this.db.query(sql, [
+        account.username,
+        account.password,
+        account.name,
+        account.email,
+        account.phone,
+        account.avatar,
+        account.role,
+      ]);
+
+      return account;
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
 
   //   async updateAccount(account: Account): Promise<any> {
   //     try {
@@ -140,17 +136,18 @@ export class AccountRepository {
   //     }
   //   }
 
-  async searchAccount(
-    page: number,
-    page_size: number
-    // account_name: string,
-  ): Promise<Account[]> {
-    const skip = (page - 1) * page_size;
-
+  async searchAccount(params: SearchAccount): Promise<SearchAccountResult> {
+    const skip: number = (params.page - 1) * params.pageSize;
     try {
       const sql = "SELECT * FROM account LIMIT ?, ?";
-      const results = await this.db.query(sql, [skip, page_size]);
-      return results;
+      // const data = await this.db.query(sql, [skip, params.pageSize]);
+      const data = await this.db.query(sql, [skip, Number(params.pageSize)]);
+
+      const [{ total }] = await this.db.query(
+        "SELECT COUNT(*) AS total FROM account",
+        []
+      );
+      return { data, total };
     } catch (error: any) {
       throw new Error(error.message);
     }

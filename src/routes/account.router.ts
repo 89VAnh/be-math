@@ -3,21 +3,40 @@ import { container } from "tsyringe";
 import { generateToken } from "../config/jwt";
 import { Account } from "../models/account";
 import { AccountService } from "../services/account.service";
+import { convertNumber } from "../utils";
 
 const accountRouter = Router();
 
 const accountService = container.resolve(AccountService);
 
-accountRouter.post("/login", async (req: Request, res: Response) => {
+accountRouter.post("/login/admin", async (req: Request, res: Response) => {
   try {
     const { username, password } = req.body;
-    const account = await accountService.authenticate(username, password);
+    const account = await accountService.authenticate(username, password, "1");
 
     if (account) {
       // Tạo mã thông báo JWT
       const token = generateToken(account);
       account.token = token;
-      res.json({ message: "Đăng nhập thành công", account });
+      res.json(account);
+    } else {
+      res.status(401).json({ message: "Sai mật tài khoản hoặc mật khẩu" });
+    }
+  } catch (error: any) {
+    res.json({ message: error.message });
+  }
+});
+
+accountRouter.post("/login", async (req: Request, res: Response) => {
+  try {
+    const { username, password } = req.body;
+    const account = await accountService.authenticate(username, password, "2");
+
+    if (account) {
+      // Tạo mã thông báo JWT
+      const token = generateToken(account);
+      account.token = token;
+      res.json(account);
     } else {
       res.status(401).json({ message: "Sai mật tài khoản hoặc mật khẩu" });
     }
@@ -39,15 +58,15 @@ accountRouter.get("/me", async (req: Request, res: Response) => {
 
 accountRouter.get("/search", async (req: Request, res: Response) => {
   try {
-    const { page, page_size } = req.query;
-
-    const accounts: Account[] = await accountService.searchAccount(
-      page ? +page || 1 : 1,
-      page_size ? +page_size || 100 : 100
-    );
-    res.json(accounts);
+    const params = req.query;
+    const results = await accountService.searchAccount({
+      page: convertNumber(params.page, 1),
+      pageSize: convertNumber(params.page_size, 100),
+      ...params,
+    });
+    res.json(results);
   } catch (error: any) {
-    res.json({ message: error.message });
+    res.status(401).json({ message: error.message });
   }
 });
 
@@ -55,11 +74,25 @@ accountRouter.delete("/:username", async (req: Request, res: Response) => {
   try {
     const { username } = req.params;
 
-    // console.log(username);
     accountService.deleteAccount(username);
     res.json({ message: "Xóa tài khoản thành công" });
   } catch (error: any) {
-    res.json({ message: error.message });
+    res.status(401).json({ message: error.message });
+  }
+});
+
+accountRouter.post("/", async (req: Request, res: Response) => {
+  try {
+    const account = req.body as Account;
+    const newAccount = await accountService.createAccount(account);
+
+    res.status(201).json(newAccount);
+  } catch (error: any) {
+    const { message } = error;
+
+    if (message.endsWith(".PRIMARY'"))
+      res.status(409).json({ message: "Tên tài khoản đã tồn tại" });
+    else res.status(401).json({ message: "Thông tin không hợp lệ" });
   }
 });
 

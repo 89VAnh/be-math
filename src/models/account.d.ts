@@ -7,3 +7,12 @@ export type Account = {
   avatar: string;
   role: number;
 };
+export type SearchAccount = {
+  page: number;
+  pageSize: number;
+};
+
+export type SearchAccountResult = {
+  data: Account[];
+  total: number;
+};
