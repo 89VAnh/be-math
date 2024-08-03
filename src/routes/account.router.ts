@@ -1,7 +1,7 @@
 import { Request, Response, Router } from "express";
 import { container } from "tsyringe";
 import { generateToken } from "../config/jwt";
-import { Account } from "../models/account";
+import { Account } from "../models/Account";
 import { AccountService } from "../services/account.service";
 import { convertNumber } from "../utils";
 
@@ -56,7 +56,7 @@ accountRouter.get("/me", async (req: Request, res: Response) => {
   }
 });
 
-accountRouter.get("/search", async (req: Request, res: Response) => {
+accountRouter.get("/", async (req: Request, res: Response) => {
   try {
     const params = req.query;
     const results = await accountService.searchAccount({

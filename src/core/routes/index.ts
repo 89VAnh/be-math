@@ -1,0 +1,11 @@
+import { Router } from "express";
+import deleteFileRouter from "./deleteFileRouter";
+import downloadRouter from "./downloadRouter";
+import uploadMultiRouter from "./upload-multiRouter";
+import uploadRouter from "./uploadRouter";
+const coreRouter = Router();
+coreRouter.use("/upload-multi", uploadMultiRouter);
+coreRouter.use("/upload", uploadRouter);
+coreRouter.use("/download", downloadRouter);
+coreRouter.use("/delete-file", deleteFileRouter);
+export default coreRouter;

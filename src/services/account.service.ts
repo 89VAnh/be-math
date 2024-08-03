@@ -1,6 +1,7 @@
 import { injectable } from "tsyringe";
 import { verifyToken } from "../config/jwt";
-import { Account, SearchAccount, SearchAccountResult } from "../models/account";
+import { Account, SearchAccount } from "../models/Account";
+import { SearchResult } from "../models/Base";
 import { AccountRepository } from "../repositories/account.repository";
 var md5 = require("md5");
 
@@ -12,7 +13,7 @@ export class AccountService {
     accountname: string,
     password: string,
     role: string
-  ): Promise<any> {
+  ): Promise<Account | null> {
     const md5_pass = md5(password);
     const account = await this.accountRepository.authenticate(
       accountname,
@@ -31,7 +32,7 @@ export class AccountService {
     if (account_data == null) throw new Error("Phiên đăng nhập hết hạn");
   }
 
-  async searchAccount(params: SearchAccount): Promise<SearchAccountResult> {
+  async searchAccount(params: SearchAccount): Promise<SearchResult<Account>> {
     try {
       return await this.accountRepository.searchAccount(params);
     } catch (error: any) {
@@ -39,9 +40,9 @@ export class AccountService {
     }
   }
 
-  async deleteAccount(username: string): Promise<any> {
+  async deleteAccount(username: string): Promise<void> {
     try {
-      return await this.accountRepository.deleteAccount(username);
+      this.accountRepository.deleteAccount(username);
     } catch (error: any) {
       throw new Error(error.message);
     }

@@ -6,13 +6,10 @@ export type Account = {
   phone: string;
   avatar: string;
   role: number;
+  token?: string;
 };
 export type SearchAccount = {
   page: number;
   pageSize: number;
-};
-
-export type SearchAccountResult = {
-  data: Account[];
-  total: number;
+  name?: string;
 };
