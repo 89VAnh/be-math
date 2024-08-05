@@ -77,4 +77,13 @@ export class AccountService {
       throw new Error(error.message);
     }
   }
+
+  async updateAccount(account: Account): Promise<Account> {
+    try {
+      const newAccount = await this.accountRepository.updateAccount(account);
+      return newAccount;
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
 }

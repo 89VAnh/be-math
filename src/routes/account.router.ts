@@ -113,4 +113,19 @@ accountRouter.patch("/change-password", async (req: Request, res: Response) => {
   }
 });
 
+accountRouter.put("/", async (req: Request, res: Response) => {
+  try {
+    const account = req.body as Account;
+    const newAccount = await accountService.updateAccount(account);
+
+    res.status(201).json(newAccount);
+  } catch (error: any) {
+    const { message } = error;
+
+    if (message.endsWith(".PRIMARY'"))
+      res.status(409).json({ message: "Cấp bậc đã tồn tại" });
+    else res.status(401).json({ message: "Thông tin không hợp lệ" });
+  }
+});
+
 export default accountRouter;

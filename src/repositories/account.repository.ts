@@ -105,4 +105,24 @@ export class AccountRepository {
       throw new Error(error.message);
     }
   }
+
+  async updateAccount(account: Account): Promise<Account> {
+    try {
+      const sql =
+        "UPDATE Account SET name = ?, email = ?, phone = ?, avatar = ? WHERE username = ?";
+      await this.db.query(sql, [
+        account.name,
+        account.email,
+        account.phone,
+        account.avatar,
+        account.username,
+      ]);
+      const getNewSql = "SELECT * FROM Account WHERE username = ?;";
+      const [newLevel] = await this.db.query(getNewSql, [account.username]);
+
+      return newLevel;
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
 }
