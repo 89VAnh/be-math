@@ -15,6 +15,7 @@ export class ChatRepository {
       const [newChat] = await this.db.query(getNewSql, []);
       return newChat;
     } catch (error: any) {
+      console.log(error);
       throw new Error(error.message);
     }
   }
