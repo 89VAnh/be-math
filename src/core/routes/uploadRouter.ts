@@ -1,8 +1,14 @@
+import { v2 as cloudinary } from "cloudinary";
 import express, { Request, Response } from "express";
 import fs from "fs";
 import { container } from "tsyringe";
 import { config } from "../../config";
 import { UploadService } from "../services/uploadService";
+cloudinary.config({
+  cloud_name: "dnz7cfnfx",
+  api_key: "425175754237622",
+  api_secret: "JfiU97XMovSJbqHoYLscnUiAtW0",
+});
 
 const uploadRouter = express.Router();
 const uploadService = container.resolve(UploadService);
@@ -28,7 +34,9 @@ uploadRouter.post(
             .json({ message: "Không thể upload file quá 5MB", result: false });
         }
       }
-    return res.json({ path: filePath, result: true });
+    const result = await cloudinary.uploader.upload(filePath);
+
+    return res.json({ path: result.secure_url, result: true });
   }
 );
 

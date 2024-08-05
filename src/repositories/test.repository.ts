@@ -31,7 +31,7 @@ export class TestRepository {
     }
   }
 
-  async getTest(id: string): Promise<Test> {
+  async getTest(id: string): Promise<any> {
     try {
       const sql = "SELECT * FROM Test WHERE id = ?";
       const results = await this.db.query(sql, [id]);

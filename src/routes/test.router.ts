@@ -73,4 +73,14 @@ testRouter.put("/", async (req: Request, res: Response) => {
   }
 });
 
+testRouter.post("/submit", async (req: Request, res: Response) => {
+  try {
+    const payload = req.body;
+    const results = await testService.submitTest(payload);
+    res.json(results);
+  } catch (error: any) {
+    res.status(401).json({ message: error.message });
+  }
+});
+
 export default testRouter;

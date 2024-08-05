@@ -58,4 +58,23 @@ export class AccountService {
       throw new Error(error.message);
     }
   }
+
+  async changePw(payload: any): Promise<any> {
+    try {
+      if (payload.newPassword === payload.rePassword) {
+        const md5_pass = md5(payload?.password);
+        const md5_newPassword = md5(payload?.newPassword);
+        const newAccount = await this.accountRepository.changePw({
+          username: payload?.username,
+          password: md5_pass,
+          newPassword: md5_newPassword,
+        });
+
+        return newAccount;
+      }
+      return null;
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
 }

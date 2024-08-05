@@ -84,4 +84,25 @@ export class AccountRepository {
       throw new Error(error.message);
     }
   }
+
+  async changePw(payload: any): Promise<any> {
+    try {
+      const sql =
+        "UPDATE Account SET password = ? WHERE username = ? AND password = ?";
+      await this.db.query(sql, [
+        payload.newPassword,
+        payload.username,
+        payload.password,
+      ]);
+
+      const sqlNewAccount = "SELECT * FROM Account WHERE username = ?";
+      const [newAccount] = await this.db.query(sqlNewAccount, [
+        payload.username,
+      ]);
+
+      return newAccount;
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
 }

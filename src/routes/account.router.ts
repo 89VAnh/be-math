@@ -96,4 +96,21 @@ accountRouter.post("/", async (req: Request, res: Response) => {
   }
 });
 
+accountRouter.patch("/change-password", async (req: Request, res: Response) => {
+  try {
+    const payload = req.body;
+    const newAccount = await accountService.changePw(payload);
+    if (newAccount) res.status(201).json(newAccount);
+    else if (newAccount === null)
+      res.status(401).json({ message: "Sai mật tài khoản hoặc mật khẩu" });
+    else res.status(401).json({ message: "Mật khẩu ko chính xác" });
+  } catch (error: any) {
+    const { message } = error;
+
+    if (message.endsWith(".PRIMARY'"))
+      res.status(409).json({ message: "Tên tài khoản đã tồn tại" });
+    else res.status(401).json({ message: "Thông tin không hợp lệ" });
+  }
+});
+
 export default accountRouter;
