@@ -22,7 +22,7 @@ export class ChatRepository {
 
   async searchChat(params: SearchChat): Promise<SearchResult<Chat>> {
     try {
-      let sql = "SELECT * FROM Chat ORDER BY date DESC";
+      let sql = "SELECT * FROM Chat ORDER BY date ASC";
       const queryParam = [];
 
       if (params.page != 0 && params.pageSize != 0) {
