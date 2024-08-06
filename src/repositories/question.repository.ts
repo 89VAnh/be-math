@@ -77,28 +77,30 @@ export class QuestionRepository {
     try {
       let sql =
         "SELECT q.*, l.name as level FROM Question q INNER JOIN Level l ON q.levelId = l.id";
-      const queryParam = [];
+      const queryParams = [];
+      let sqlTotal = "SELECT COUNT(*) AS total FROM Question";
+      const totalParams = [];
 
       if (params.content !== "" && params.content !== undefined) {
         sql += " WHERE content REGEXP ?";
-        queryParam.push(params.content);
+        queryParams.push(params.content);
+
+        sqlTotal += " WHERE content REGEXP ?";
+        totalParams.push(params.content);
       }
       if (params.levelId !== undefined) {
         sql += " WHERE l.id = ?";
-        queryParam.push(params.levelId);
+        queryParams.push(params.levelId);
       }
       if (params.page != 0 && params.pageSize != 0) {
         const skip: number = (params.page - 1) * params.pageSize;
 
         sql += " LIMIT ?, ?";
-        queryParam.push(skip, Number(params.pageSize));
+        queryParams.push(skip, Number(params.pageSize));
       }
-      const data = await this.db.query(sql, queryParam);
+      const data = await this.db.query(sql, queryParams);
 
-      const [{ total }] = await this.db.query(
-        "SELECT COUNT(*) AS total FROM Question",
-        []
-      );
+      const [{ total }] = await this.db.query(sqlTotal, totalParams);
       return { data, total };
     } catch (error: any) {
       throw new Error(error.message);

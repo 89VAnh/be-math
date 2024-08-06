@@ -53,25 +53,27 @@ export class ResultRepository {
   async searchResult(params: SearchResults): Promise<SearchResult<Result>> {
     try {
       let sql = "SELECT * FROM Result";
-      const queryParam = [];
+      const queryParams = [];
+      let sqlTotal = "SELECT COUNT(*) AS total FROM Result";
+      const totalParams = [];
       if (params.user !== "" && params.user !== undefined) {
         sql += " WHERE user = ?";
-        queryParam.push(params.user);
+        queryParams.push(params.user);
+
+        sqlTotal += " WHERE user = ?";
+        totalParams.push(params.user);
       }
 
       if (params.page != 0 && params.pageSize != 0) {
         const skip: number = (params.page - 1) * params.pageSize;
 
         sql += " LIMIT ?, ?";
-        queryParam.push(skip, Number(params.pageSize));
+        queryParams.push(skip, Number(params.pageSize));
       }
 
-      const data = await this.db.query(sql, queryParam);
+      const data = await this.db.query(sql, queryParams);
 
-      const [{ total }] = await this.db.query(
-        "SELECT COUNT(*) AS total FROM Result",
-        []
-      );
+      const [{ total }] = await this.db.query(sqlTotal, totalParams);
 
       return {
         data,

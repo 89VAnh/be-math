@@ -22,7 +22,8 @@ export class ChatRepository {
 
   async searchChat(params: SearchChat): Promise<SearchResult<Chat>> {
     try {
-      let sql = "SELECT * FROM Chat ORDER BY date ASC";
+      let sql =
+        "SELECT c.*, a.name as user, a.avatar as avatar FROM Chat c INNER JOIN Account a ON c.user = a.username ORDER BY date ASC";
       const queryParam = [];
 
       if (params.page != 0 && params.pageSize != 0) {

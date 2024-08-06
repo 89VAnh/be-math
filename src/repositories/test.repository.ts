@@ -126,9 +126,15 @@ export class TestRepository {
         "SELECT t.*, l.name as level FROM Test t INNER JOIN Level l ON t.levelId = l.id";
       const queryParam = [];
 
+      let sqlTotal = "SELECT COUNT(*) AS total FROM Test";
+      const totalParams = [];
+
       if (params.id !== "" && params.id !== undefined) {
         sql += " WHERE t.id REGEXP ?";
         queryParam.push(params.id);
+
+        sqlTotal += " WHERE t.id REGEXP ?";
+        totalParams.push(params.id);
       }
       if (params.page != 0 && params.pageSize != 0) {
         const skip: number = (params.page - 1) * params.pageSize;
@@ -144,10 +150,7 @@ export class TestRepository {
           return test;
         })
       );
-      const [{ total }] = await this.db.query(
-        "SELECT COUNT(*) AS total FROM Test",
-        []
-      );
+      const [{ total }] = await this.db.query(sqlTotal, totalParams);
 
       return {
         data,

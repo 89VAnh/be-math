@@ -62,9 +62,15 @@ export class AccountRepository {
       let sql = "SELECT * FROM Account";
       const queryParam = [];
 
+      let sqlTotal = "SELECT COUNT(*) AS total FROM Account";
+      const totalParams = [];
+
       if (params.name !== "" && params.name !== undefined) {
         sql += " WHERE name REGEXP ?";
         queryParam.push(params.name);
+
+        sqlTotal += " WHERE name REGEXP ?";
+        totalParams.push(params.name);
       }
       if (params.page != 0 && params.pageSize != 0) {
         const skip: number = (params.page - 1) * params.pageSize;
@@ -75,10 +81,7 @@ export class AccountRepository {
 
       const data = await this.db.query(sql, queryParam);
 
-      const [{ total }] = await this.db.query(
-        "SELECT COUNT(*) AS total FROM Account",
-        []
-      );
+      const [{ total }] = await this.db.query(sqlTotal, totalParams);
       return { data, total };
     } catch (error: any) {
       throw new Error(error.message);
