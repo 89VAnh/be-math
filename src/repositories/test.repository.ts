@@ -133,7 +133,7 @@ export class TestRepository {
         sql += " WHERE t.id REGEXP ?";
         queryParam.push(params.id);
 
-        sqlTotal += " WHERE t.id REGEXP ?";
+        sqlTotal += " WHERE id REGEXP ?";
         totalParams.push(params.id);
       }
       if (params.page != 0 && params.pageSize != 0) {
