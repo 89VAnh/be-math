@@ -136,6 +136,19 @@ export class TestRepository {
         sqlTotal += " WHERE id REGEXP ?";
         totalParams.push(params.id);
       }
+      if (params.id && params.level) {
+        sql += " AND l.id = ?";
+        queryParam.push(params.level);
+
+        sqlTotal += " AND levelId = ?";
+        totalParams.push(params.level);
+      } else if (params.level) {
+        sql += " WHERE l.id = ?";
+        queryParam.push(params.level);
+
+        sqlTotal += " WHERE levelId = ?";
+        totalParams.push(params.level);
+      }
       if (params.page != 0 && params.pageSize != 0) {
         const skip: number = (params.page - 1) * params.pageSize;
 

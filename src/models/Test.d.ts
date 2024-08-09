@@ -12,4 +12,5 @@ export type SearchTest = {
   page: number;
   pageSize: number;
   id?: string;
+  level?: number;
 };
