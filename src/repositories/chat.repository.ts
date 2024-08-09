@@ -37,7 +37,8 @@ export class ChatRepository {
         totalParams.push(params.content);
       }
 
-      sql += " ORDER BY date DESC";
+      // sql += " ORDER BY date DESC";
+      sql += " ORDER BY date ASC";
 
       if (params.page != 0 && params.pageSize != 0) {
         const skip: number = (params.page - 1) * params.pageSize;
