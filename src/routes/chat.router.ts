@@ -37,4 +37,15 @@ chatRouter.post("/", async (req: Request, res: Response) => {
   }
 });
 
+chatRouter.delete("/:id", async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    chatService.deleteChat(convertNumber(id, 0));
+    res.json({ message: "Xóa tin nhắn thành công" });
+  } catch (error: any) {
+    res.status(401).json({ message: error.message });
+  }
+});
+
 export default chatRouter;

@@ -7,4 +7,5 @@ export type Chat = {
 export type SearchChat = {
   page: number;
   pageSize: number;
+  content?: string;
 };

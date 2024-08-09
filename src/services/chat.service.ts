@@ -23,4 +23,12 @@ export class ChatService {
       throw new Error(error.message);
     }
   }
+
+  async deleteChat(id: number): Promise<void> {
+    try {
+      await this.chatRepository.deleteChat(id);
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
 }
