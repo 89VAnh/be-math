@@ -27,10 +27,22 @@ export class DashboardRepository {
             ORDER BY month_year;`;
       const resultPerMonth = await this.db.query(sqlResultPerMonth, []);
 
+      const sqlResultPerLevel =
+        "SELECT l.name, count(r.id) as result_count FROM Result r INNER JOIN Test t ON r.testId = t.id INNER JOIN Level l ON t.levelId = l.id GROUP BY l.name";
+      const resultPerLevel = await this.db.query(sqlResultPerLevel, []);
+
       const sqlLevel =
         "SELECT l.name, COUNT(*) as total  FROM Test t INNER JOIN Level l ON t.levelId = l.id GROUP BY l.id, l.name;";
       const levels = await this.db.query(sqlLevel, []);
-      return { results, users, questions, tests, resultPerMonth, levels };
+      return {
+        results,
+        users,
+        questions,
+        tests,
+        resultPerMonth,
+        resultPerLevel,
+        levels,
+      };
     } catch (error: any) {
       console.log(error);
       throw new Error(error.message);
