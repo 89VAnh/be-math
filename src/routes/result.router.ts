@@ -58,4 +58,8 @@ resultRouter.post("/", async (req: Request, res: Response) => {
   }
 });
 
+resultRouter.get("/rank", async (_: Request, res: Response) => {
+  res.json(resultService.getRankResult());
+});
+
 export default resultRouter;

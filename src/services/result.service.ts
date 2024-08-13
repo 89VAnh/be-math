@@ -39,4 +39,12 @@ export class ResultService {
       throw new Error(error.message);
     }
   }
+
+  async getRankResult(): Promise<any> {
+    try {
+      return this.resultRepository.getRankResult();
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
 }

@@ -83,4 +83,17 @@ export class ResultRepository {
       throw new Error(error.message);
     }
   }
+
+  async getRankResult(): Promise<any> {
+    try {
+      let sql =
+        "SELECT a.name, a.avatar, COUNT(r.id) as count FROM Account a INNER JOIN Result r ON a.username = r.user GROUP BY a.name, a.avatar";
+
+      const data = await this.db.query(sql, []);
+
+      return data;
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
 }
